@@ -1,0 +1,165 @@
+# Publish digipin-ts package on new tag push
+# Workflow is triggered on 'v*' tag push events and manual dispatches
+# Generates build artifacts, SBOMs, and attests provenance
+# Publishes package to npm and creates GitHub release
+name: CD — digipin-ts
+
+on:
+    push:
+        tags:
+            - "v*"
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: publish-digipin-ts-${{ github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    publish:
+        name: Build Attest Publish
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            packages: write
+            id-token: write
+            attestations: write
+        env:
+            TEST_MODE: ${{ vars.TEST_MODE }}
+            SYFT_VERSION: ${{ vars.SYFT_VERSION }}
+            SYFT_SHA256: ${{ vars.SYFT_SHA256 }}
+        environment: production
+        steps:
+            - name: Checkout
+              uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+              with:
+                  fetch-depth: 0
+
+            - name: Set derived variables
+              run: |
+                  set -euo pipefail
+                  echo "TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+
+            - name: Setup Node
+              uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+              with:
+                  node-version: "24"
+                  registry-url: "https://registry.npmjs.org"
+
+            - name: Install deps
+              run: |
+                  set -euo pipefail
+                  npm ci
+
+            - name: Validate tag matches package.json
+              run: |
+                  set -euo pipefail
+                  TAG="${GITHUB_REF_NAME}"
+                  PKG_VERSION=$(node -p "require('./package.json').version")
+                  if [ "v${PKG_VERSION}" != "$TAG" ]; then
+                    echo "Tag $TAG does not match package.json version $PKG_VERSION"
+                    exit 1
+                  fi
+
+            - name: Build package
+              run: npm run build
+
+            - name: Create dist archive
+              run: |
+                  set -euo pipefail
+                  mkdir -p artifacts
+                  tar -czf artifacts/digipin-ts-${TAG}.tgz dist package.json README.md LICENSE
+
+            - name: Generate checksums
+              run: |
+                  set -euo pipefail
+                  cd artifacts
+                  sha256sum *.tgz > digipin-ts-${GITHUB_REF_NAME}.tgz.sha256
+
+            - name: Install pinned Syft
+              run: |
+                  set -euo pipefail
+                  curl -fsSL https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/syft_${SYFT_VERSION}_linux_amd64.tar.gz -o syft.tgz
+                  echo "${SYFT_SHA256}  syft.tgz" | sha256sum -c -
+                  sudo tar -xzf syft.tgz -C /usr/local/bin
+
+            - name: Generate SBOMs
+              run: |
+                  mkdir sbom
+                  syft dir:dist -o cyclonedx-json > sbom/sbom-cyclonedx.json
+                  syft dir:dist -o spdx-json > sbom/sbom-spdx.json
+
+            - name: Attest provenance
+              uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8
+              with:
+                  subject-path: |
+                      dist/**
+                      sbom/**
+                      artifacts/**
+
+            - name: Check if GitHub release already exists
+              id: check_release
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  set -euo pipefail
+                  if gh release view "$TAG" >/dev/null 2>&1; then
+                      echo "RELEASE_EXISTS=true" >> "$GITHUB_ENV"
+                      IS_DRAFT=$(gh release view "$TAG" --json isDraft -q '.isDraft')
+                      echo "RELEASE_IS_DRAFT=${IS_DRAFT}" >> "$GITHUB_ENV"
+                      echo "Release exists (draft=${IS_DRAFT})"
+                  else
+                      echo "RELEASE_EXISTS=false" >> "$GITHUB_ENV"
+                      echo "Release does not exist"
+                  fi
+
+            - name: Abort if release already published
+              if: env.RELEASE_EXISTS == 'true' && env.RELEASE_IS_DRAFT != 'true'
+              run: |
+                  echo "ERROR: Release $TAG already exists and is published."
+                  echo "Refusing to modify an immutable release."
+                  exit 1
+
+            - name: Create GitHub release
+              if: env.RELEASE_EXISTS != 'true'
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  START_TAG: ${{ vars.START_TAG }}
+              run: |
+                  set -euo pipefail
+                  gh release create "$TAG" \
+                    --draft \
+                    --generate-notes \
+                    --title "$TAG" \
+                    ${START_TAG:+--notes-start-tag "$START_TAG"}
+
+            - name: Upload release assets
+              if: env.TEST_MODE != 'true'
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  set -euo pipefail
+                  gh release upload "$TAG" \
+                    artifacts/* \
+                    sbom/* \
+                    --clobber
+
+            - name: Publish to npm (--dry-run)
+              if: env.TEST_MODE != 'true'
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+              run: npm publish --access public --dry-run
+
+            - name: Publish to npm
+              if: env.TEST_MODE != 'true'
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+              run: npm publish --access public
+
+            - name: Publish GitHub release
+              if: env.TEST_MODE != 'true'
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: gh release edit ${TAG} --draft=false

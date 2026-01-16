@@ -24,6 +24,11 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "html"],
       exclude: ["dist/**", "**/*.config.ts", "eslint.config.ts"],
+      thresholds: {
+        lines: 95,
+        functions: 95,
+        branches: 90,
+      },
     },
   },
 });

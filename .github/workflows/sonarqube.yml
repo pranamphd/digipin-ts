@@ -3,8 +3,22 @@ on:
     push:
         branches:
             - main
+        paths:
+            - "src/**/*.ts"
+            - "tests/**/*.ts"
+            - "package.json"
+            - "package-lock.json"
+            - "tsconfig*.json"
+            - "eslint.config.ts"
     pull_request:
         types: [opened, synchronize, reopened]
+        paths:
+            - "src/**/*.ts"
+            - "tests/**/*.ts"
+            - "package.json"
+            - "package-lock.json"
+            - "tsconfig*.json"
+            - "eslint.config.ts"
 
 permissions:
     contents: read
