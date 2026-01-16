@@ -152,13 +152,12 @@ jobs:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
               run: |
                   set -euo pipefail
-                  VERSION=$(node -p "require('./package.json').version")
 
-                  if [[ "$VERSION" == *"-alpha."* ]]; then
+                  if [[ "${PKG_VERSION}" == *"-alpha."* ]]; then
                       npm publish --access public --tag alpha --dry-run
-                  elif [[ "$VERSION" == *"-beta."* ]]; then
+                  elif [[ "${PKG_VERSION}" == *"-beta."* ]]; then
                       npm publish --access public --tag beta --dry-run
-                  elif [[ "$VERSION" == *"-rc."* ]]; then
+                  elif [[ "${PKG_VERSION}" == *"-rc."* ]]; then
                       npm publish --access public --tag next --dry-run
                   else
                       npm publish --access public --dry-run
@@ -170,13 +169,11 @@ jobs:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
               run: |
                   set -euo pipefail
-                  VERSION=$(node -p "require('./package.json').version")
-
-                  if [[ "$VERSION" == *"-alpha."* ]]; then
+                  if [[ "${PKG_VERSION}" == *"-alpha."* ]]; then
                       npm publish --access public --tag alpha
-                  elif [[ "$VERSION" == *"-beta."* ]]; then
+                  elif [[ "${PKG_VERSION}" == *"-beta."* ]]; then
                       npm publish --access public --tag beta
-                  elif [[ "$VERSION" == *"-rc."* ]]; then
+                  elif [[ "${PKG_VERSION}" == *"-rc."* ]]; then
                       npm publish --access public --tag next
                   else
                       npm publish --access public
