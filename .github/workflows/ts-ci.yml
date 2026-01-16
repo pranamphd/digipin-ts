@@ -1,0 +1,65 @@
+# CI workflow for digipin-ts TypeScript project
+# This workflow lints, typechecks, tests, and audits the codebase on pushes and pull requests to main.
+# It also supports manual triggering via workflow_dispatch.
+# It runs on multiple Node.js versions to ensure compatibility.
+name: CI — digipin-ts
+
+on:
+    push:
+        branches: [main]
+        paths:
+            - "src/**/*.ts"
+            - "tests/**/*.ts"
+            - "package.json"
+            - "package-lock.json"
+            - "tsconfig*.json"
+            - "eslint.config.ts"
+    pull_request:
+        branches: [main]
+        paths:
+            - "src/**/*.ts"
+            - "tests/**/*.ts"
+            - "package.json"
+            - "package-lock.json"
+            - "tsconfig*.json"
+            - "eslint.config.ts"
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    test:
+        name: Lint, Typecheck, Test, and Audit
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [20.x, 22.x, 24.x, 25.x]
+        steps:
+            - name: Checkout
+              uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+            - name: Setup Node
+              uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: npm
+
+            - name: Install dependencies (locked)
+              run: |
+                  set -euo pipefail
+                  npm ci
+
+            - name: Lint (eslint)
+              run: npm run lint
+
+            - name: Typecheck
+              run: npm run typecheck
+
+            - name: Run tests with coverage report
+              run: |
+                  npm run test:coverage
+
+            - name: npm audit (production deps only)
+              run: |
+                  npm audit --omit=dev --audit-level=low
