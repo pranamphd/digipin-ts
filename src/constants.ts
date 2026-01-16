@@ -1,4 +1,3 @@
-export {};
 /**
  * Copyright (c) 2026 Pranam
  * ORCID: https://orcid.org/0009-0007-9316-3616
@@ -12,5 +11,4 @@ export {};
  * QR Code:
  * ![QR Code](/ORCID.png)
  * Scan the QR code to access my ORCID profile.
- */ 
-//# sourceMappingURL=index.d.ts.map
+ */
