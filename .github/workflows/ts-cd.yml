@@ -150,13 +150,37 @@ jobs:
               if: env.TEST_MODE != 'true'
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-              run: npm publish --access public --dry-run
+              run: |
+                  set -euo pipefail
+                  VERSION=$(node -p "require('./package.json').version")
+
+                  if [[ "$VERSION" == *"-alpha."* ]]; then
+                      npm publish --access public --tag alpha --dry-run
+                  elif [[ "$VERSION" == *"-beta."* ]]; then
+                      npm publish --access public --tag beta --dry-run
+                  elif [[ "$VERSION" == *"-rc."* ]]; then
+                      npm publish --access public --tag next --dry-run
+                  else
+                      npm publish --access public --dry-run
+                  fi
 
             - name: Publish to npm
               if: env.TEST_MODE != 'true'
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-              run: npm publish --access public
+              run: |
+                  set -euo pipefail
+                  VERSION=$(node -p "require('./package.json').version")
+
+                  if [[ "$VERSION" == *"-alpha."* ]]; then
+                      npm publish --access public --tag alpha
+                  elif [[ "$VERSION" == *"-beta."* ]]; then
+                      npm publish --access public --tag beta
+                  elif [[ "$VERSION" == *"-rc."* ]]; then
+                      npm publish --access public --tag next
+                  else
+                      npm publish --access public
+                  fi
 
             - name: Publish GitHub release
               if: env.TEST_MODE != 'true'
