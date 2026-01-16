@@ -31,8 +31,8 @@ export class DigipinError extends Error {
 
   /**
    * Creates a new DigipinError instance.
-   * @param code - Error code indicating the type of error
-   * @param message - Human-readable error message
+   * @param code Error code indicating the type of error
+   * @param message Human-readable error message
    */
   public constructor(code: DigipinError["code"], message: string) {
     super(message);
