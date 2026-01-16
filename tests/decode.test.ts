@@ -16,6 +16,7 @@
 import { describe, it, expect } from "vitest";
 import { decode } from "../src/decode.js";
 import { DigipinError } from "../src/errors.js";
+import { DIGIPIN_LATITUDE_MAX, DIGIPIN_LATITUDE_MIN, DIGIPIN_LONGITUDE_MAX, DIGIPIN_LONGITUDE_MIN } from "../src/constants.js";
 
 describe("decode", () => {
   it("decodes a valid DIGIPIN into a location", () => {
@@ -23,11 +24,16 @@ describe("decode", () => {
 
     expect(location.latitude).toBeTypeOf("number");
     expect(location.longitude).toBeTypeOf("number");
+    expect(location.latitude).within(DIGIPIN_LATITUDE_MIN, DIGIPIN_LATITUDE_MAX);
+    expect(location.longitude).within(DIGIPIN_LONGITUDE_MIN, DIGIPIN_LONGITUDE_MAX)
   });
 
   it("accepts lowercase and separated DIGIPIN", () => {
     const location = decode("39j-49l-l8t4");
     expect(location.latitude).toBeTypeOf("number");
+    expect(location.longitude).toBeTypeOf("number");
+    expect(location.latitude).within(DIGIPIN_LATITUDE_MIN, DIGIPIN_LATITUDE_MAX);
+    expect(location.longitude).within(DIGIPIN_LONGITUDE_MIN, DIGIPIN_LONGITUDE_MAX)
   });
 
   it("rejects invalid DIGIPIN", () => {
