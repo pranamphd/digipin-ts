@@ -1,0 +1,34 @@
+{
+  "name": "@pranamphd/digipin",
+  "version": "0.1.0+alpha.0",
+  "description": "TypeScript library for encoding and decoding India's DIGIPIN (Digital Postal Index Number).",
+  "keywords": [
+    "digipin",
+    "india",
+    "postal",
+    "gis",
+    "geolocation",
+    "pincode",
+    "library"
+  ],
+  "homepage": "https://github.com/pranamphd/digipin-ts#readme",
+  "bugs": {
+    "url": "https://github.com/pranamphd/digipin-ts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pranamphd/digipin-ts.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Pranam <pranam@pranam.phd>",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node tests/**/*.test.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.17"
+  }
+}
