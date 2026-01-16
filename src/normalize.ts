@@ -12,3 +12,25 @@
  * ![QR Code](/ORCID.png)
  * Scan the QR code to access my ORCID profile.
  */
+
+/**
+ * Normalize a DIGIPIN string.
+ *
+ * Normalization applies the following rules:
+ * - Removes '-' separator characters
+ * - Converts all characters to uppercase
+ *
+ * @param digipin - DIGIPIN string to normalize
+ * @returns Normalized DIGIPIN string
+ */
+export function normalize(digipin: string): string {
+  let normalizedDigipin: string = "";
+
+  for (const character of digipin) {
+    if (character !== "-") {
+      normalizedDigipin += character.toUpperCase();
+    }
+  }
+
+  return normalizedDigipin;
+}

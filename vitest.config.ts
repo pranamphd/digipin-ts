@@ -12,3 +12,18 @@
  * ![QR Code](/ORCID.png)
  * Scan the QR code to access my ORCID profile.
  */
+
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    environment: "node",
+    globals: true,
+    include: ["tests/**/*.test.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html"],
+      exclude: ["dist/**", "**/*.config.ts", "eslint.config.ts"],
+    },
+  },
+});

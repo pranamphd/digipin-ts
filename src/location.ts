@@ -12,3 +12,23 @@
  * ![QR Code](/ORCID.png)
  * Scan the QR code to access my ORCID profile.
  */
+
+/**
+ * Represents a geographic location expressed as latitude and longitude.
+ *
+ * Both values are expressed in decimal degrees using the WGS-84
+ * coordinate reference system.
+ *
+ * This type is used as the return value of DIGIPIN decoding operations.
+ */
+export type Location = {
+  /**
+   * Latitude in decimal degrees.
+   */
+  latitude: number;
+
+  /**
+   * Longitude in decimal degrees.
+   */
+  longitude: number;
+}
