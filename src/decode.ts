@@ -46,7 +46,7 @@ const DIGIPIN_SYMBOL_POSITION_MAP: ReadonlyMap<
  * Decodes a DIGIPIN into geodetic coordinates.
  *
  * @param digipin - DIGIPIN string (separators allowed)
- * @returns The centroid location of the DIGIPIN grid cell
+ * @returns The geodetic coordinates of the DIGIPIN
  * @throws Error if the DIGIPIN is invalid
  */
 export function decode(digipin: string): Location {
