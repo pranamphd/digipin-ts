@@ -24,13 +24,39 @@
  * 
  * @example
  * ```ts
- * import { encode, decode } from "@pranamphd/digipin";
+ * import { encode, decode, Location } from "@pranamphd/digipin";
  * 
- * const digipin = encode(28.6139, 77.209); // Encode coordinates to DIGIPIN
+ * const location: Location = { latitude: 28.6139, longitude: 77.209 }; // Example coordinates for Kartavya Path, New Delhi
+ * 
+ * const digipin = encode(location); // Encode coordinates to DIGIPIN
  * console.log(digipin); // Example output: "39J438TJC7"
  * 
- * const location = decode(digipin); // Decode DIGIPIN back to coordinates
- * console.log(location); // Example output: { latitude: 28.6139, longitude: 77.209 }
+ * const decodedLocation = decode(digipin); // Decode DIGIPIN back to coordinates
+ * console.log(decodedLocation); // Example output: { latitude: 28.6139, longitude: 77.209 }
+ * ```
+ * 
+ * ```js
+ * const {encode, decode} = require("@pranamphd/digipin");
+ * 
+ * let location = { latitude: 28.6139, longitude: 77.209 }; // Example coordinates for Kartavya Path, New Delhi
+ * 
+ * let digipin = encode(location); // Encode coordinates to DIGIPIN
+ * console.log(digipin); // Example output: "39J438TJC7"
+ * 
+ * let decodedLocation = decode(digipin); // Decode DIGIPIN back to coordinates
+ * console.log(decodedLocation); // Example output: { latitude: 28.6139, longitude: 77.209 }
+ * ```
+ * 
+ * ```js
+ * import { encode, decode } from "@pranamphd/digipin";
+ * 
+ * let location = { latitude: 28.6139, longitude: 77.209 }; // Example coordinates for Kartavya Path, New Delhi
+ * 
+ * let digipin = encode(location); // Encode coordinates to DIGIPIN
+ * console.log(digipin); // Example output: "39J438TJC7"
+ * 
+ * let decodedLocation = decode(digipin); // Decode DIGIPIN back to coordinates
+ * console.log(decodedLocation); // Example output: { latitude: 28.6139, longitude: 77.209 }
  * ```
  */
 export { encode } from "./encode.js";
