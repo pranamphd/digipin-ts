@@ -36,6 +36,54 @@ All implementations in this repository aim to faithfully reproduce the behavior 
 
 ---
 
+## Usage
+
+```sh
+npm i @pranamphd/digipin
+```
+### TypeScript
+
+```ts
+import { encode, decode, Location } from "@pranamphd/digipin";
+
+const location: Location = { latitude: 28.6139, longitude: 77.209 }; // Example coordinates for Kartavya Path, New Delhi
+
+const digipin = encode(location); // Encode coordinates to DIGIPIN
+console.log(digipin); // Example output: "39J438TJC7"
+
+const decodedLocation = decode(digipin); // Decode DIGIPIN back to coordinates
+console.log(decodedLocation); // Example output: { latitude: 28.6139, longitude: 77.209 }
+```
+### JavaScript (CommonJS)
+
+```js
+const {encode, decode} = require("@pranamphd/digipin");
+
+let location = { latitude: 28.6139, longitude: 77.209 }; // Example coordinates for Kartavya Path, New Delhi
+
+let digipin = encode(location); // Encode coordinates to DIGIPIN
+console.log(digipin); // Example output: "39J438TJC7"
+
+let decodedLocation = decode(digipin); // Decode DIGIPIN back to coordinates
+console.log(decodedLocation); // Example output: { latitude: 28.6139, longitude: 77.209 }
+```
+
+### JavaScript (ESM)
+
+```js
+import { encode, decode } from "@pranamphd/digipin";
+
+let location = { latitude: 28.6139, longitude: 77.209 }; // Example coordinates for Kartavya Path, New Delhi
+
+let digipin = encode(location); // Encode coordinates to DIGIPIN
+console.log(digipin); // Example output: "39J438TJC7"
+
+let decodedLocation = decode(digipin); // Decode DIGIPIN back to coordinates
+console.log(decodedLocation); // Example output: { latitude: 28.6139, longitude: 77.209 }
+```
+
+---
+
 ## Status
 
 This repository is under active development.
