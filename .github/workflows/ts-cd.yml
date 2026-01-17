@@ -147,7 +147,7 @@ jobs:
                     --clobber
 
             - name: Publish to npm (--dry-run)
-              if: env.TEST_MODE != 'true'
+              if: env.TEST_MODE == 'true'
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
               run: |
