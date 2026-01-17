@@ -147,11 +147,12 @@ jobs:
                     --clobber
 
             - name: Publish to npm (--dry-run)
-              if: env.TEST_MODE != 'true'
+              if: env.TEST_MODE == 'true'
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
               run: |
                   set -euo pipefail
+                  PKG_VERSION=$(node -p "require('./package.json').version")
 
                   if [[ "${PKG_VERSION}" == *"-alpha."* ]]; then
                       npm publish --access public --tag alpha --dry-run
@@ -169,6 +170,8 @@ jobs:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
               run: |
                   set -euo pipefail
+                  PKG_VERSION=$(node -p "require('./package.json').version")
+
                   if [[ "${PKG_VERSION}" == *"-alpha."* ]]; then
                       npm publish --access public --tag alpha
                   elif [[ "${PKG_VERSION}" == *"-beta."* ]]; then
