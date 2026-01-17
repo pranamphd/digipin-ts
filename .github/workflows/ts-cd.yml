@@ -154,11 +154,11 @@ jobs:
                   set -euo pipefail
                   PKG_VERSION=$(node -p "require('./package.json').version")
 
-                  if [[ "${PKG_VERSION}" == *"-alpha."* ]]; then
+                  if [[ "${PKG_VERSION}" == *"-alpha"* ]]; then
                       npm publish --access public --tag alpha --dry-run
-                  elif [[ "${PKG_VERSION}" == *"-beta."* ]]; then
+                  elif [[ "${PKG_VERSION}" == *"-beta"* ]]; then
                       npm publish --access public --tag beta --dry-run
-                  elif [[ "${PKG_VERSION}" == *"-rc."* ]]; then
+                  elif [[ "${PKG_VERSION}" == *"-rc"* ]]; then
                       npm publish --access public --tag next --dry-run
                   else
                       npm publish --access public --dry-run
@@ -172,11 +172,11 @@ jobs:
                   set -euo pipefail
                   PKG_VERSION=$(node -p "require('./package.json').version")
 
-                  if [[ "${PKG_VERSION}" == *"-alpha."* ]]; then
+                  if [[ "${PKG_VERSION}" == *"-alpha"* ]]; then
                       npm publish --access public --tag alpha
-                  elif [[ "${PKG_VERSION}" == *"-beta."* ]]; then
+                  elif [[ "${PKG_VERSION}" == *"-beta"* ]]; then
                       npm publish --access public --tag beta
-                  elif [[ "${PKG_VERSION}" == *"-rc."* ]]; then
+                  elif [[ "${PKG_VERSION}" == *"-rc"* ]]; then
                       npm publish --access public --tag next
                   else
                       npm publish --access public
