@@ -51,7 +51,7 @@ jobs:
             - name: Install deps
               run: |
                   set -euo pipefail
-                  npm ci
+                  npm ci --ignore-scripts
 
             - name: Validate tag matches package.json
               run: |
@@ -76,12 +76,12 @@ jobs:
               run: |
                   set -euo pipefail
                   cd artifacts
-                  sha256sum *.tgz > digipin-ts-${GITHUB_REF_NAME}.tgz.sha256
+                  sha256sum digipin-ts-${GITHUB_REF_NAME}.tgz > digipin-ts-${GITHUB_REF_NAME}.tgz.sha256
 
             - name: Install pinned Syft
               run: |
                   set -euo pipefail
-                  curl -fsSL https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/syft_${SYFT_VERSION}_linux_amd64.tar.gz -o syft.tgz
+                  curl --proto '=https' --tlsv1.2 -fsSL https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/syft_${SYFT_VERSION}_linux_amd64.tar.gz -o syft.tgz
                   echo "${SYFT_SHA256}  syft.tgz" | sha256sum -c -
                   sudo tar -xzf syft.tgz -C /usr/local/bin
 
