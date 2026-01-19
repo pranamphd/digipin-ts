@@ -43,7 +43,7 @@
     "typecheck": "tsc -p tsconfig.test.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage && vitest run --reporter=junit --outputFile=test-report.junit.xml",
     "check": "npm run lint && npm run typecheck && npm run test"
   },
   "devDependencies": {

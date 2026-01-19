@@ -65,6 +65,12 @@ jobs:
                   npm audit --omit=dev --audit-level=low
 
             - name: Upload coverage reports to Codecov
-              uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de #5.5.2
+              uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # 5.5.2
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+
+            - name: Upload test results to Codecov
+              if: ${{ !cancelled() }}
+              uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # 1.2.1
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
