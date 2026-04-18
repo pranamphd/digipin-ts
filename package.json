@@ -1,6 +1,6 @@
 {
   "name": "@pranamphd/digipin",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "TypeScript library for encoding and decoding India's DIGIPIN (Digital Postal Index Number).",
   "keywords": [
     "digipin",
